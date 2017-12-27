@@ -1,0 +1,15 @@
+[Unit]
+Description=Mari
+After=network.target
+
+[Service]
+ExecStart=/home/pi/.nvm/versions/node/v8.1.3/bin/coffee /home/pi/code/mari/app.coffee
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=mari-process
+User=root
+
+[Install]
+Wants=network.target
+WantedBy=multi-user.target
