@@ -26,7 +26,10 @@ closePins ->
 
 getSome = (cb) ->
 	request.get "http://#{secret.server}:#{secret.port}/mariStatus/#{secret.one}/#{secret.two}", json: true, (error, res) ->
-		return console.log error if error
+		if error
+			console.log error
+			console.log "retrying in 5s"
+			return setTimeout getSome, 5000
 		console.log "res", res.body
 
 		goOn = res.body.status
