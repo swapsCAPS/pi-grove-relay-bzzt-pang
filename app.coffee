@@ -1,5 +1,8 @@
 async = require "async"
 gpio = require "rpi-gpio"
+request = require "request"
+
+secret = require "./secret"
 
 closePins = (cb) ->
 	gpio.destroy ->
@@ -18,6 +21,17 @@ closePins ->
 			closePins ->
 				process.exit 0
 
-		gpio.write 7, true, (error) ->
+		getSome()
+
+
+getSome = (cb) ->
+	request.get "http://#{secret.server}:#{secret.port}/mariStatus/#{secret.one}/#{secret.two}", json: true, (error, res) ->
+		return console.log error if error
+		console.log "res", res.body
+
+		goOn = res.body.status
+
+		gpio.write 7, goOn, (error) ->
 			throw error if error
 			console.log "written"
+			setTimeout getSome, 1000
